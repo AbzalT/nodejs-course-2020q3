@@ -13,7 +13,7 @@ const caesar = (string, shift, action = 'encode') => {
     const length = alphabet.length;
     return string.split('').map(symbol => {
         const lowerCaseSymbol = symbol.toLowerCase();
-        const currentPosition = alphabet.indexOf(lowerCaseOfSymbol);
+        const currentPosition = alphabet.indexOf(lowerCaseSymbol);
         if (currentPosition >= 0) {
             const isLowerCase = symbol === lowerCaseSymbol;
             let shiftedPosition = (currentPosition + shift) % length;

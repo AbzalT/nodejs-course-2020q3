@@ -1,11 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 
 class Board {
-  constructor({
-      id = uuidv4(), 
-      title = 'BOARD_TITLE', 
-      columns = []
-    } = {}) {
+  constructor({ id = uuidv4(), title = 'BOARD_TITLE', columns = [] } = {}) {
     this.id = id;
     this.title = title;
     this.columns = [...columns];

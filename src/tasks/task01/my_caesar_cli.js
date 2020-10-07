@@ -1,4 +1,4 @@
-const { conversion } = require('./modules/conversion')
-const { readConsole } = require('./modules/command')
+const { conversion } = require('./modules/conversion');
+const { readConsole } = require('./modules/command');
 
 conversion(readConsole());

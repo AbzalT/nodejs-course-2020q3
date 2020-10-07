@@ -55,9 +55,9 @@ const getById = (tableName, id) => {
 };
 
 const remove = (tableName, id) => {
-  const entity = getEntity(tableName, id);
+  const entity = getById(tableName, id);
   if (entity) {
-    db[`fix${tableName}Structure`](entity);
+    db[`fix${tableName}`](entity);
     const index = db[tableName].indexOf(entity);
     db[tableName] = [
       ...db[tableName].slice(0, index),
@@ -73,16 +73,16 @@ const remove = (tableName, id) => {
 const create = (tableName, entity) => {
   db[tableName].push(entity);
 
-  return getEntity(tableName, entity.id);
+  return getById(tableName, entity.id);
 };
 
 const update = async (tableName, id, entity) => {
-  const oldEntity = getEntity(tableName, id);
+  const oldEntity = getById(tableName, id);
   if (oldEntity) {
     db[tableName][db[tableName].indexOf(oldEntity)] = { ...entity };
   }
 
-  return getEntity(tableName, id);
+  return getById(tableName, id);
 };
 
-module.exports = {getAll,  getById,  remove,  create,  update};
+module.exports = { getAll, getById, remove, create, update };

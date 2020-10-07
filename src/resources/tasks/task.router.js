@@ -1,5 +1,5 @@
 const { OK, NO_CONTENT } = require('http-status-codes');
-const router = require('express').Router();
+const router = require('express').Router({ mergeParams: true });
 const Task = require('./task.model');
 const tasksService = require('./task.service');
 
@@ -10,16 +10,21 @@ router.route('/').get(async (req, res) => {
 
 router.route('/:id').get(async (req, res) => {
   const task = await tasksService.getById(req.params.id);
-  await res.status(OK).send(Task.toResponse(task));
+  if(task){
+    await res.status(OK).send(Task.toResponse(task));
+  }
+  else {
+    await res.sendStatus(404);
+  }
 });
 
 router.route('/').post(async (req, res) => {
-  const user = new Task({
+  const task = new Task({
     title: req.body.title,
     order: req.body.order,
     description: req.body.description,
     userId: req.body.userId,
-    boardId: req.body.boardId,
+    boardId: req.params.boardId,
     columnId: req.body.columnId
   });
   const newTask = await tasksService.create(task);
@@ -31,7 +36,7 @@ router.route('/:id').put(async (req, res) => {
     id: req.params.id,
     title: req.body.title,
     order: req.body.order,
-    description: req.body.description
+    description: req.body.description,
     userId: req.body.userId,
     boardId: req.body.boardId,
     columnId: req.body.columnId

@@ -1,4 +1,5 @@
 module.exports = error => {
   console.log(error.message ? error.message : error);
-  process.exit(1);
+  process.exitCode = 1;
+  // process.exit(1);
 };

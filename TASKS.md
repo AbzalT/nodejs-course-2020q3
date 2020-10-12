@@ -63,7 +63,6 @@ $ node my_caesar_cli --action decode --shift 7 --input decoded.txt --output plai
 > output.txt
 > `Aopz pz zljyla. Tlzzhnl hivba "_" zftivs!`
 
-P.S. Задача находится в /src/tasks/task01
 ## Task 2. Express REST service
 
 Let's try to create a competitor for Trello!

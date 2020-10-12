@@ -20,8 +20,8 @@ const create = async entity => await db.create(table_name, entity);
 const update = async (id, entity) => await db.update(table_name, id, entity);
 
 const remove = async id => {
-  const result = await db.remove(table_name, id)
-  if(result.length > 1) {
+  const result = await db.remove(table_name, id);
+  if (result.length > 1) {
     throw new NOT_FOUND_ERROR(ENTITY_NAME, { id });
   }
 };

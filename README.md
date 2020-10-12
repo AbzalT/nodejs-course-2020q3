@@ -1,4 +1,5 @@
-# RS School REST service
+# RS School NodeJS Course 2020Q3
+# REST service
 
 ## Prerequisites
 

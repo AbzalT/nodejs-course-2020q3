@@ -1,4 +1,4 @@
-const { NOT_FOUND_ERROR } = require('../../errors/appError');
+const { NOT_FOUND_ERROR } = require('../../errors/notFoundError');
 const ENTITY_NAME = 'task';
 const db = require('../../util/db.InMemory');
 const table_name = 'Tasks';

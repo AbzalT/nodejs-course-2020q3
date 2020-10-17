@@ -17,7 +17,7 @@ Add logging functionality to already existing REST service.
 
 ![Скриншот прохождения тестов](doc/task03_test.png "Скриншот прохождения тестов")
 
-![Скриншот логгирования](doc/task3_logging.png "Скриншот логгирования")
+![Скриншот логгирования](doc/task03_logging.png "Скриншот логгирования")
 
 ![Скриншот обработки UNCAUGHT](doc/task03_exception_UNCAUGHT.png "Скриншот обработки UNCAUGHT")
 

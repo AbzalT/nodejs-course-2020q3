@@ -1,0 +1,75 @@
+const { OK, NO_CONTENT } = require('http-status-codes');
+const router = require('express').Router({ mergeParams: true });
+const asyncHandler = require('express-async-handler');
+const service = require('./task.DB.service');
+const Entity = require('./task.DB.model');
+
+const toResponse = entity => {
+  const id = entity._id;
+  const title = entity.title;
+  const description = entity.description;
+  const order = entity.order;
+  const userId = entity.userId;
+  const boardId = entity.boardId;
+  const columnId = entity.columnId;
+  return { id, title, description, order, userId, boardId, columnId };
+};
+
+router.route('/').get(
+  asyncHandler(async (req, res, next) => {
+    const entities = await service.getAll();
+    res.status(OK).send(entities.map(toResponse));
+    next();
+  })
+);
+
+router.route('/:id').get(
+  asyncHandler(async (req, res, next) => {
+    const entity = await service.getById(req.params.id);
+    res.status(OK).send(toResponse(entity));
+    next();
+  })
+);
+
+router.route('/:id').delete(
+  asyncHandler(async (req, res, next) => {
+    await service.remove(req.params.id);
+    res.sendStatus(NO_CONTENT);
+    next();
+  })
+);
+
+router.route('/').post(
+  asyncHandler(async (req, res, next) => {
+    const entity = new Entity({
+      title: req.body.title,
+      order: req.body.order,
+      description: req.body.description,
+      userId: req.body.userId,
+      boardId: req.params.boardId,
+      columnId: req.body.columnId
+    });
+    const newEntity = await service.create(entity);
+    res.status(OK).send(toResponse(newEntity));
+    next();
+  })
+);
+
+router.route('/:id').put(
+  asyncHandler(async (req, res, next) => {
+    const entityToUpdate = new Entity({
+      title: req.body.title,
+      order: req.body.order,
+      description: req.body.description,
+      userId: req.body.userId,
+      boardId: req.body.boardId,
+      columnId: req.body.columnId
+    });
+    await service.update(req.params.id, entityToUpdate);
+    const entity = service.getById(req.params.id);
+    res.status(OK).send(toResponse(entity));
+    next();
+  })
+);
+
+module.exports = router;

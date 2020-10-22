@@ -1,14 +1,35 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
-const userRouter = require('./resources/users/user.router');
-const boardRouter = require('./resources/boards/board.router');
-const taskRouter = require('./resources/tasks/task.router');
+// const userRouter = require('./resources/users/user.router');
+const userDBRouter = require('./resources/users/user.DB.router');
+
+// const boardRouter = require('./resources/boards/board.router');
+const boardDBRouter = require('./resources/boards/board.DB.router');
+
+// const taskRouter = require('./resources/tasks/task.router');
+const taskDBRouter = require('./resources/tasks/task.DB.router');
+
 const errorHandler = require('./errors/errorHandler');
 const morgan = require('morgan');
 const { logRequest, EXCEPTION } = require('./errors/logger');
+const { MONGO_URI } = require('./common/config');
+
 const app = express();
+mongoose
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+  })
+  .then(() => {
+    console.log('MongoDB connected!');
+    // mongoose.connection.db.dropDatabase(); // очитска базы перед использованием
+  })
+  .catch(error => console.log(error));
+
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 const exception = EXCEPTION;
 
@@ -45,9 +66,9 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use('/users', userRouter);
-app.use('/boards', boardRouter);
-boardRouter.use('/:boardId/tasks', taskRouter);
+app.use('/users', userDBRouter);
+app.use('/boards', boardDBRouter);
+boardDBRouter.use('/:boardId/tasks', taskDBRouter);
 
 // Task 3 - 2. Add express middleware which will log all unhandled errors and return a standard message with HTTP code 500 (Internal Server Error).
 app.use(errorHandler);

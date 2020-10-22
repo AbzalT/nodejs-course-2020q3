@@ -1,5 +1,6 @@
-const { OK, NO_CONTENT } = require('http-status-codes');
-const router = require('express').Router({ mergeParams: true });
+const { OK, NOT_FOUND, NO_CONTENT } = require('http-status-codes');
+const express = require('express');
+const router = express.Router();
 const asyncHandler = require('express-async-handler');
 const service = require('./board.DB.service');
 const Entity = require('./board.DB.model');
@@ -49,13 +50,18 @@ router.route('/').post(
 
 router.route('/:id').put(
   asyncHandler(async (req, res, next) => {
+    const id = req.params.id;
     const entityToUpdate = new Entity({
       title: req.body.title,
       columns: req.body.columns
     });
-    await service.update(req.params.id, entityToUpdate);
-    const entity = service.getById(req.params.id);
-    res.status(OK).send(toResponse(entity));
+    await service.update(id, entityToUpdate);
+    const entity = await service.getById(id);
+    if (entity) {
+      res.status(OK).send(toResponse(entity));
+    } else {
+      res.status(NOT_FOUND).send('Board not found');
+    }
     next();
   })
 );

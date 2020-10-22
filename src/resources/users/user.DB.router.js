@@ -1,4 +1,4 @@
-const { OK, NO_CONTENT } = require('http-status-codes');
+const { OK, NOT_FOUND, NO_CONTENT } = require('http-status-codes');
 const express = require('express');
 const router = express.Router();
 const service = require('./user.DB.service');
@@ -6,10 +6,7 @@ const asyncHandler = require('express-async-handler');
 const Entity = require('./user.DB.model');
 
 const toResponse = entity => {
-  const id = entity._id;
-  const name = entity.name;
-  const login = entity.login;
-  return { id, name, login };
+  return { id: entity._id, name: entity.name, login: entity.login };
 };
 
 router.route('/').get(
@@ -51,13 +48,19 @@ router.route('/').post(
 
 router.route('/:id').put(
   asyncHandler(async (req, res, next) => {
+    const id = req.params.id;
     const entityToUpdate = new Entity({
       name: req.body.name,
       login: req.body.login,
       password: req.body.password
     });
-    const entity = await service.update(req.params.id, entityToUpdate);
-    res.status(OK).send(toResponse(entity));
+    await service.update(id, entityToUpdate);
+    const entity = await service.getById(id);
+    if (entity) {
+      res.status(OK).send(toResponse(entity));
+    } else {
+      res.status(NOT_FOUND).send('User not found');
+    }
     next();
   })
 );

@@ -1,4 +1,4 @@
-const { OK, NO_CONTENT } = require('http-status-codes');
+const { OK, NOT_FOUND, NO_CONTENT } = require('http-status-codes');
 const router = require('express').Router({ mergeParams: true });
 const asyncHandler = require('express-async-handler');
 const service = require('./task.DB.service');
@@ -26,7 +26,11 @@ router.route('/').get(
 router.route('/:id').get(
   asyncHandler(async (req, res, next) => {
     const entity = await service.getById(req.params.id);
-    res.status(OK).send(toResponse(entity));
+    if (entity) {
+      res.status(OK).send(toResponse(entity));
+    } else {
+      res.status(NOT_FOUND).send('Not found');
+    }
     next();
   })
 );
@@ -57,6 +61,7 @@ router.route('/').post(
 
 router.route('/:id').put(
   asyncHandler(async (req, res, next) => {
+    const id = req.params.id;
     const entityToUpdate = new Entity({
       title: req.body.title,
       order: req.body.order,
@@ -65,9 +70,13 @@ router.route('/:id').put(
       boardId: req.body.boardId,
       columnId: req.body.columnId
     });
-    await service.update(req.params.id, entityToUpdate);
-    const entity = service.getById(req.params.id);
-    res.status(OK).send(toResponse(entity));
+    await service.update(id, entityToUpdate);
+    const entity = await service.getById(id);
+    if (entity) {
+      res.status(OK).send(toResponse(entity));
+    } else {
+      res.status(NOT_FOUND).send('Task not found');
+    }
     next();
   })
 );

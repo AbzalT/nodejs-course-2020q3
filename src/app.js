@@ -26,7 +26,7 @@ mongoose
   })
   .then(() => {
     console.log('MongoDB connected!');
-    // mongoose.connection.db.dropDatabase(); // очитска базы перед использованием
+    mongoose.connection.db.dropDatabase(); // очитска базы перед использованием
   })
   .catch(error => console.log(error));
 

@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions: [2, { allowTernary: true }]*/
 
-const Entity = {
+const mapper = {
   Users: {
     toResponse: entity => {
       return { id: entity._id, name: entity.name, login: entity.login };
@@ -49,4 +49,4 @@ const Entity = {
   }
 };
 
-module.exports = collection => Entity[collection];
+module.exports = collection => mapper[collection];

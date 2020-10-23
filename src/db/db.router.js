@@ -1,10 +1,9 @@
 /* eslint no-unused-expressions: [2, { allowTernary: true }]*/
-const { OK, NOT_FOUND, NO_CONTENT } = require('http-status-codes');
-const asyncHandler = require('express-async-handler');
-const express = require('express');
-const router = express.Router();
-
 const entityRoutes = (toResponse, toDb, service) => {
+  const { OK, NOT_FOUND, NO_CONTENT } = require('http-status-codes');
+  const asyncHandler = require('express-async-handler');
+  const router = require('express').Router({ mergeParams: true });
+
   router.route('/').get(
     asyncHandler(async (req, res, next) => {
       const entities = await service.getAll();

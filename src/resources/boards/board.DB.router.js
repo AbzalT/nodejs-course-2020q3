@@ -1,13 +1,11 @@
+/* eslint no-unused-expressions: [2, { allowTernary: true }]*/
 const { OK, NOT_FOUND, NO_CONTENT } = require('http-status-codes');
 const express = require('express');
 const router = express.Router();
 const asyncHandler = require('express-async-handler');
-const service = require('./board.DB.service');
-// const Entity = require('./board.DB.model');
 
-const toResponse = entity => {
-  return { id: entity._id, title: entity.title, columns: entity.columns };
-};
+const { toResponse, toDb, service } = require('../../db/db.mapper')('Boards');
+// module.exports = (require('../../db/db.router'))(toResponse, toDb, service);
 
 router.route('/').get(
   asyncHandler(async (req, res, next) => {
@@ -20,11 +18,9 @@ router.route('/').get(
 router.route('/:id').get(
   asyncHandler(async (req, res, next) => {
     const entity = await service.getById(req.params.id);
-    if (entity) {
-      res.status(OK).send(toResponse(entity));
-    } else {
-      res.sendStatus(NOT_FOUND);
-    }
+    entity
+      ? res.status(OK).send(toResponse(entity))
+      : res.sendStatus(NOT_FOUND);
     next();
   })
 );
@@ -39,10 +35,7 @@ router.route('/:id').delete(
 
 router.route('/').post(
   asyncHandler(async (req, res, next) => {
-    const entity = {
-      title: req.body.title,
-      columns: req.body.columns
-    };
+    const entity = { ...toDb(req) };
     const newEntity = await service.create(entity);
     res.status(OK).send(toResponse(newEntity));
     next();
@@ -52,17 +45,12 @@ router.route('/').post(
 router.route('/:id').put(
   asyncHandler(async (req, res, next) => {
     const id = req.params.id;
-    const entityToUpdate = {
-      title: req.body.title,
-      columns: req.body.columns
-    };
+    const entityToUpdate = { ...toDb(req) };
     await service.update(id, entityToUpdate);
     const entity = await service.getById(id);
-    if (entity) {
-      res.status(OK).send(toResponse(entity));
-    } else {
-      res.sendStatus(NOT_FOUND);
-    }
+    entity
+      ? res.status(OK).send(toResponse(entity))
+      : res.sendStatus(NOT_FOUND);
     next();
   })
 );

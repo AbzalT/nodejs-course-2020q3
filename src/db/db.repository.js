@@ -37,7 +37,7 @@ const repository = entity => {
       Model.findByIdAndUpdate(id, entityToUpdate, { new: true }),
     remove: async id => {
       fix(id);
-      return Entity.findByIdAndDelete(id);
+      return Model.findByIdAndDelete(id);
     }
   };
 };

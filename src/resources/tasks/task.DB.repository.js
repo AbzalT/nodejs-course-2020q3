@@ -4,7 +4,7 @@ const getAll = async () => Entity.find({});
 const getById = async id => Entity.findById(id);
 const create = async entity => Entity.create(entity);
 const update = async (id, entityToUpdate) =>
-  Entity.findByIdAndUpdate({ _id: id }, entityToUpdate, { new: true });
+  Entity.findByIdAndUpdate(id, entityToUpdate, { new: true });
 const remove = async id => {
   return Entity.findByIdAndDelete(id);
 };

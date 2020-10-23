@@ -1,12 +1,20 @@
+/* eslint no-unused-expressions: [2, { allowTernary: true }]*/
 const { OK, NOT_FOUND, NO_CONTENT } = require('http-status-codes');
 const express = require('express');
 const router = express.Router();
 const service = require('./user.DB.service');
 const asyncHandler = require('express-async-handler');
-const Entity = require('./user.DB.model');
 
 const toResponse = entity => {
   return { id: entity._id, name: entity.name, login: entity.login };
+};
+
+const entityDto = req => {
+  return {
+    name: req.body.name,
+    login: req.body.login,
+    password: req.body.password
+  };
 };
 
 router.route('/').get(
@@ -20,7 +28,11 @@ router.route('/').get(
 router.route('/:id').get(
   asyncHandler(async (req, res, next) => {
     const entity = await service.getById(req.params.id);
-    res.status(OK).send(toResponse(entity));
+    if (entity) {
+      res.status(OK).send(toResponse(entity));
+    } else {
+      res.sendStatus(NOT_FOUND);
+    }
     next();
   })
 );
@@ -35,11 +47,7 @@ router.route('/:id').delete(
 
 router.route('/').post(
   asyncHandler(async (req, res, next) => {
-    const entity = new Entity({
-      name: req.body.name,
-      login: req.body.login,
-      password: req.body.password
-    });
+    const entity = { ...entityDto(req) };
     const newEntity = await service.create(entity);
     res.status(OK).send(toResponse(newEntity));
     next();
@@ -49,18 +57,17 @@ router.route('/').post(
 router.route('/:id').put(
   asyncHandler(async (req, res, next) => {
     const id = req.params.id;
-    const entityToUpdate = new Entity({
-      name: req.body.name,
-      login: req.body.login,
-      password: req.body.password
-    });
+    const entityToUpdate = { ...entityDto(req) };
     await service.update(id, entityToUpdate);
     const entity = await service.getById(id);
-    if (entity) {
+    entity
+      ? res.status(OK).send(toResponse(entity))
+      : res.sendStatus(NOT_FOUND);
+    /* if (entity) {
       res.status(OK).send(toResponse(entity));
     } else {
-      res.status(NOT_FOUND).send('User not found');
-    }
+      res.sendStatus(NOT_FOUND);
+    } */
     next();
   })
 );

@@ -8,7 +8,9 @@ const update = async (id, entityToUpdate) =>
   Entity.findByIdAndUpdate({ _id: id }, entityToUpdate, { new: true });
 
 const remove = async id => {
-  secondaryEntity.updateMany({ userId: id }, { $set: { userId: null } });
+  secondaryEntity.updateMany({ userId: id }, { userId: null }, err => {
+    console.log(err);
+  });
   return Entity.findByIdAndDelete(id);
 };
 

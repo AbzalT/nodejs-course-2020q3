@@ -3,13 +3,10 @@ const express = require('express');
 const router = express.Router();
 const asyncHandler = require('express-async-handler');
 const service = require('./board.DB.service');
-const Entity = require('./board.DB.model');
+// const Entity = require('./board.DB.model');
 
 const toResponse = entity => {
-  const id = entity._id;
-  const title = entity.title;
-  const columns = entity.columns;
-  return { id, title, columns };
+  return { id: entity._id, title: entity.title, columns: entity.columns };
 };
 
 router.route('/').get(
@@ -23,7 +20,11 @@ router.route('/').get(
 router.route('/:id').get(
   asyncHandler(async (req, res, next) => {
     const entity = await service.getById(req.params.id);
-    res.status(OK).send(toResponse(entity));
+    if (entity) {
+      res.status(OK).send(toResponse(entity));
+    } else {
+      res.sendStatus(NOT_FOUND);
+    }
     next();
   })
 );
@@ -38,10 +39,10 @@ router.route('/:id').delete(
 
 router.route('/').post(
   asyncHandler(async (req, res, next) => {
-    const entity = new Entity({
+    const entity = {
       title: req.body.title,
       columns: req.body.columns
-    });
+    };
     const newEntity = await service.create(entity);
     res.status(OK).send(toResponse(newEntity));
     next();
@@ -51,16 +52,16 @@ router.route('/').post(
 router.route('/:id').put(
   asyncHandler(async (req, res, next) => {
     const id = req.params.id;
-    const entityToUpdate = new Entity({
+    const entityToUpdate = {
       title: req.body.title,
       columns: req.body.columns
-    });
+    };
     await service.update(id, entityToUpdate);
     const entity = await service.getById(id);
     if (entity) {
       res.status(OK).send(toResponse(entity));
     } else {
-      res.status(NOT_FOUND).send('Board not found');
+      res.sendStatus(NOT_FOUND);
     }
     next();
   })

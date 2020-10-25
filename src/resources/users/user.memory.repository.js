@@ -1,6 +1,6 @@
 const { NOT_FOUND_ERROR } = require('../../errors/notFoundError');
 const ENTITY_NAME = 'user';
-const db = require('../../util/db.InMemory');
+const db = require('../../db/db.InMemory');
 const table_name = 'Users';
 
 const getAll = async () => {

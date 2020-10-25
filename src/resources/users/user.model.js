@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
+// inMemoryModel
 class User {
   constructor({
     id = uuidv4(),

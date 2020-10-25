@@ -1,6 +1,6 @@
 const { NOT_FOUND_ERROR } = require('../../errors/notFoundError');
 const ENTITY_NAME = 'board';
-const db = require('../../util/db.InMemory');
+const db = require('../../db/db.InMemory');
 const table_name = 'Boards';
 
 const getAll = async () => {
@@ -9,9 +9,9 @@ const getAll = async () => {
 
 const getById = async id => {
   const entity = await db.getById(table_name, id);
-  /* if (!entity) {
+  if (!entity) {
     throw new NOT_FOUND_ERROR(ENTITY_NAME, { id });
-  } */
+  }
   return entity;
 };
 

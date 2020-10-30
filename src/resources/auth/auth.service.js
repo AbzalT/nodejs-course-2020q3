@@ -21,7 +21,7 @@ const errorHandler = (res, error) => {
 const login = async (req, res) => {
   const candidate = await User.findOne({ login: req.body.login });
   if (candidate) {
-    const passwordResult = bcrypt.compare(
+    const passwordResult = await bcrypt.compare(
       req.body.password,
       candidate.password
     );
@@ -56,11 +56,11 @@ const register = async (req, res) => {
       message: 'Такой пользователь уже существует.'
     });
   } else {
-    const salt = bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(10);
     const password = req.body.password;
     const user = new User({
       login: req.body.login,
-      password: bcrypt.hash(password, salt)
+      password: await bcrypt.hash(password, salt)
     });
     try {
       await user.save().then(() => console.log('User created!'));

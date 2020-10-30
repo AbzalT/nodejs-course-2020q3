@@ -3,8 +3,11 @@ const entityRoutes = (toResponse, toDb, service) => {
   const { OK, NOT_FOUND, NO_CONTENT } = require('http-status-codes');
   const asyncHandler = require('express-async-handler');
   const router = require('express').Router({ mergeParams: true });
+  const passport = require('passport');
 
-  router.route('/').get(
+  router.get(
+    '/',
+    passport.authenticate('jwt', { session: false }),
     asyncHandler(async (req, res, next) => {
       const entities = await service.getAll();
       res.status(OK).send(entities.map(toResponse));
@@ -12,7 +15,9 @@ const entityRoutes = (toResponse, toDb, service) => {
     })
   );
 
-  router.route('/:id').get(
+  router.get(
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
     asyncHandler(async (req, res, next) => {
       const entity = await service.getById(req.params.id);
       entity
@@ -22,7 +27,9 @@ const entityRoutes = (toResponse, toDb, service) => {
     })
   );
 
-  router.route('/:id').delete(
+  router.delete(
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
     asyncHandler(async (req, res, next) => {
       await service.remove(req.params.id);
       res.sendStatus(NO_CONTENT);
@@ -30,7 +37,9 @@ const entityRoutes = (toResponse, toDb, service) => {
     })
   );
 
-  router.route('/').post(
+  router.post(
+    '/',
+    passport.authenticate('jwt', { session: false }),
     asyncHandler(async (req, res, next) => {
       const entity = { ...toDb(req) };
       const newEntity = await service.create(entity);
@@ -39,7 +48,9 @@ const entityRoutes = (toResponse, toDb, service) => {
     })
   );
 
-  router.route('/:id').put(
+  router.put(
+    '/:id',
+    passport.authenticate('jwt', { session: false }),
     asyncHandler(async (req, res, next) => {
       const id = req.params.id;
       const entityToUpdate = { ...toDb(req) };

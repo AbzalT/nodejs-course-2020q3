@@ -10,11 +10,11 @@ mongoose
   })
   .then(async () => {
     console.log('MongoDB connected!');
-    const dropDB = await mongoose.connection.db.dropDatabase();
+    /* const dropDB = await mongoose.connection.db.dropDatabase();
     const message = dropDB
       ? 'DB is dropped before use'
       : 'Error drop DB before use';
-    console.log(message);
+    console.log(message); */
   })
   .catch(error => console.log(error));
 

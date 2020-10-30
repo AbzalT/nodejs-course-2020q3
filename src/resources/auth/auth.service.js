@@ -35,7 +35,8 @@ const login = async (req, res) => {
         { expiresIn: 3600 }
       );
       res.status(OK).json({
-        token: `Bearer ${token}`
+        token: `${token}`
+        // token: `Bearer ${token}`
       });
       console.log('Вход произведен');
     } else {

@@ -1,5 +1,6 @@
 const { PORT, MONGO_URI } = require('./common/config');
 const mongoose = require('mongoose');
+const { createAdmin } = require('./resources/auth/auth.service');
 const app = require('./app');
 
 mongoose
@@ -10,11 +11,12 @@ mongoose
   })
   .then(async () => {
     console.log('MongoDB connected!');
-    /* const dropDB = await mongoose.connection.db.dropDatabase();
+    const dropDB = await mongoose.connection.db.dropDatabase();
     const message = dropDB
       ? 'DB is dropped before use'
       : 'Error drop DB before use';
-    console.log(message); */
+    console.log(message);
+    createAdmin();
   })
   .catch(error => console.log(error));
 

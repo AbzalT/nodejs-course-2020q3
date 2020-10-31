@@ -51,16 +51,22 @@ const login = async (req, res) => {
   }
 };
 const register = async (req, res) => {
-  const candidate = await User.findOne({ login: req.body.login });
+  const _login = req.body.login;
+  const _password = req.body.password;
+  createUser(res, _login, _password);
+};
+
+const createUser = async (res, _login, _password) => {
+  const candidate = await User.findOne({ login: _login });
   if (candidate) {
     res.status(CONFLICT).json({
       message: 'Такой пользователь уже существует.'
     });
   } else {
     const salt = await bcrypt.genSalt(10);
-    const password = req.body.password;
+    const password = _password;
     const user = new User({
-      login: req.body.login,
+      login: _login,
       password: await bcrypt.hash(password, salt)
     });
     try {
@@ -72,4 +78,17 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { login, register };
+const createAdmin = async () => {
+  const salt = await bcrypt.genSalt(10);
+  const admin = new User({
+    login: 'admin',
+    password: await bcrypt.hash('admin', salt)
+  });
+  try {
+    await admin.save().then(() => console.log('Admin created!'));
+  } catch (e) {
+    const message = e.message ? e.message : e;
+    console.log(message);
+  }
+};
+module.exports = { login, register, createAdmin };

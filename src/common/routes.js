@@ -8,6 +8,8 @@ const db = require('../db/dbSelect');
 // #region Declaration
 const { userRouter, boardRouter, taskRouter } = db.select(true); // useDB ? MongoDB : inMemoryDB
 const swaggerDocument = YAML.load(path.join(__dirname, '../../doc/api.yaml'));
+const authLoginRouter = require('../resources/auth/auth.login.router');
+const authRegisterRouter = require('../resources/auth/auth.register.router');
 // #endregion
 
 // #region Use
@@ -21,6 +23,9 @@ const set = app => {
     }
     next();
   });
+
+  app.use('/login', authLoginRouter);
+  app.use('/register', authRegisterRouter);
 
   app.use('/users', userRouter);
   app.use('/boards', boardRouter);

@@ -63,11 +63,10 @@ const createUser = async (res, _login, _password) => {
       message: 'Такой пользователь уже существует.'
     });
   } else {
-    const salt = await bcrypt.genSalt(10);
     const password = _password;
     const user = new User({
       login: _login,
-      password: await bcrypt.hash(password, salt)
+      password: await cryptPassword(password)
     });
     try {
       await user.save().then(() => console.log('User created!'));
@@ -79,10 +78,9 @@ const createUser = async (res, _login, _password) => {
 };
 
 const createAdmin = async () => {
-  const salt = await bcrypt.genSalt(10);
   const admin = new User({
     login: 'admin',
-    password: await bcrypt.hash('admin', salt)
+    password: await cryptPassword('admin')
   });
   try {
     await admin.save().then(() => console.log('Admin created!'));
@@ -91,4 +89,10 @@ const createAdmin = async () => {
     console.log(message);
   }
 };
-module.exports = { login, register, createAdmin };
+
+const cryptPassword = async _password => {
+  const salt = await bcrypt.genSalt(10);
+  const password = bcrypt.hash(_password, salt);
+  return password;
+};
+module.exports = { login, register, createAdmin, cryptPassword };

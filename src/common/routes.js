@@ -3,6 +3,7 @@ const path = require('path');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const db = require('../db/dbSelect');
+const { cryptPassword } = require('../resources/auth/auth.service');
 // #endregion
 
 // #region Declaration
@@ -21,6 +22,16 @@ const set = app => {
     if (req.originalUrl === '/') {
       res.send('Service is running!');
     }
+    next();
+  });
+
+  app.post('/users', async (req, res, next) => {
+    req.body.password = await cryptPassword(req.body.password);
+    next();
+  });
+
+  app.put('/users', async (req, res, next) => {
+    req.body.password = await cryptPassword(req.body.password);
     next();
   });
 

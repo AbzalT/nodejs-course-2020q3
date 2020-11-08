@@ -1,15 +1,16 @@
 /* eslint no-unused-expressions: [2, { allowTernary: true }]*/
+const { cryptPassword } = require('../resources/auth/auth.service');
 
 const mapper = {
   Users: {
     toResponse: entity => {
       return { id: entity._id, name: entity.name, login: entity.login };
     },
-    toDb: req => {
+    toDb: async req => {
       return {
         name: req.body.name,
         login: req.body.login,
-        password: req.body.password
+        password: await cryptPassword(req.body.password)
       };
     },
     service: require('../resources/users/user.DB.service')

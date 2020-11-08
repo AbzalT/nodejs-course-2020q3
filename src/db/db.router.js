@@ -41,7 +41,7 @@ const entityRoutes = (toResponse, toDb, service) => {
     '/',
     passport.authenticate('jwt', { session: false }),
     asyncHandler(async (req, res, next) => {
-      const entity = { ...toDb(req) };
+      const entity = { ...(await toDb(req)) };
       const newEntity = await service.create(entity);
       res.status(OK).send(toResponse(newEntity));
       next();
@@ -53,7 +53,7 @@ const entityRoutes = (toResponse, toDb, service) => {
     passport.authenticate('jwt', { session: false }),
     asyncHandler(async (req, res, next) => {
       const id = req.params.id;
-      const entityToUpdate = { ...toDb(req) };
+      const entityToUpdate = { ...(await toDb(req)) };
       await service.update(id, entityToUpdate);
       const entity = await service.getById(id);
       entity

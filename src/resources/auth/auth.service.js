@@ -32,7 +32,7 @@ const login = async (req, res) => {
           userId: candidate._id
         },
         JWT_SECRET_KEY,
-        { expiresIn: 3600 }
+        { expiresIn: 360 }
       );
       res.status(OK).json({
         token: `${token}`
@@ -92,7 +92,7 @@ const createAdmin = async () => {
 
 const cryptPassword = async _password => {
   const salt = await bcrypt.genSalt(10);
-  const password = bcrypt.hash(_password, salt);
+  const password = await bcrypt.hash(_password, salt);
   return password;
 };
 module.exports = { login, register, createAdmin, cryptPassword };
